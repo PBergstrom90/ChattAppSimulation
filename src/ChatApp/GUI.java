@@ -4,69 +4,98 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class GUI extends JFrame implements ActionListener {
 
-    JFrame frame;
-    JPanel mainPanel;
-    JPanel chatPanel;
-    JPanel textPanel;
-    JTextArea chatMemberArea;
-    JTextArea chatArea;
-    JTextField messageField;
-    JScrollPane chatScroll;
-    JButton connectButton = new JButton("Disconnect");
-    JLabel chatMembersLabel = new JLabel("Members Online: ");
+    private final JTextArea chatMemberArea = new JTextArea();
+    private final JTextArea chatArea = new JTextArea();
+    private final JTextField messageField = new JTextField();
+    private final JButton connectButton = new JButton("Disconnect");
+    private final User user;
+    private NetworkSender networkSender;
 
-    public void createGUI(){
-        frame = new JFrame("ChatApp");
-        mainPanel = new JPanel();
-        chatPanel = new JPanel();
-        textPanel = new JPanel();
-        chatMemberArea = new JTextArea();
-        chatArea = new JTextArea();
-        messageField = new JTextField();
-        chatScroll = new JScrollPane(chatArea);
+    public GUI(User user) throws IOException {
+        this.user = user;
+        createGUI();
+        NetworkReceiver.getInstance().setGui(this); // Set reference to GUI
+        new Thread(NetworkReceiver.getInstance()).start(); // Start the network receiver in a new thread
+    }
+
+    public void createGUI() {
         chatArea.setEditable(false);
         chatMemberArea.setEditable(false);
         messageField.setEditable(true);
 
-        frame.setTitle("Chat App Deluxe");
-        frame.getContentPane().setBackground(Color.WHITE);
-        frame.setLayout(new BorderLayout());
-        frame.setSize(700,500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.add(mainPanel);
+        this.setTitle("Chat " + user.getName());
+        this.setSize(700, 550);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
 
-        mainPanel.setLayout(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        this.add(mainPanel);
         mainPanel.add(connectButton, BorderLayout.NORTH);
-        mainPanel.add(chatPanel, BorderLayout.CENTER);
         connectButton.addActionListener(this);
 
-        chatPanel.setLayout(new BorderLayout());
-        chatPanel.add(textPanel, BorderLayout.CENTER);
+        JPanel chatPanel = new JPanel(new BorderLayout());
+        mainPanel.add(chatPanel, BorderLayout.CENTER);
         chatPanel.add(messageField, BorderLayout.SOUTH);
 
-        textPanel.setLayout(new GridLayout(1,2));
-        textPanel.add(chatArea);
-        textPanel.add(chatMemberArea);
-        textPanel.add(chatScroll);
-        chatMemberArea.add(chatMembersLabel);
+        JPanel textPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
 
-        messageField.setFont(new Font("Roboto", Font.PLAIN, 12));
+        // Set the chat area
+        gbc.weightx = 0.75; // 75% of horizontal space
+        gbc.weighty = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        textPanel.add(new JScrollPane(chatArea), gbc);
+
+        // Set the member area
+        gbc.weightx = 0.25; // 25% of horizontal space
+        gbc.weighty = 1.0;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        JPanel memberAreaContainer = new JPanel(new BorderLayout());
+        JLabel membersLabel = new JLabel("MEMBERS ONLINE: ");
+        memberAreaContainer.add(membersLabel, BorderLayout.NORTH);
+        memberAreaContainer.add(new JScrollPane(chatMemberArea), BorderLayout.CENTER);
+        textPanel.add(memberAreaContainer, gbc);
+        chatPanel.add(textPanel, BorderLayout.CENTER);
+
+        chatArea.setFont(new Font("Comic Sans", Font.PLAIN, 16));
+        chatMemberArea.setFont(new Font("Comic Sans", Font.PLAIN, 16));
+        messageField.setFont(new Font("Comic Sans", Font.PLAIN, 16));
         messageField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        pack();
+
+        messageField.addActionListener(e -> {
+            String message = messageField.getText();
+           if(!message.isEmpty()) {
+               networkSender.sendMessage(message);
+               messageField.setText("");
+           }
+        });
     }
 
-    public GUI() {
-        createGUI();
-    }
-
+    // Action for when the disconnect button is pressed.
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(null, "User disconnected.");
-        System.exit(0);
+            JOptionPane.showMessageDialog(null, "User disconnected.");
+            System.exit(0);
+    }
+
+    // Method to update chat area from NetworkReceiver
+    public void updateChatArea(String message) {
+        SwingUtilities.invokeLater(() -> chatArea.append(message));
+    }
+
+    // Method to update members area
+    public void updateMembersArea(String members) {
+        SwingUtilities.invokeLater(() -> chatMemberArea.append(members));
+    }
+
+    public void setNetworkSender(NetworkSender networkSender) {
+        this.networkSender = networkSender;
     }
 }
