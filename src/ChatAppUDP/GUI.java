@@ -4,9 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 
-public class GUI extends JFrame implements ActionListener {
+public class GUI extends JFrame implements ActionListener, WindowListener {
 
     private final JTextArea chatMemberArea = new JTextArea();
     private final JTextArea chatArea = new JTextArea();
@@ -29,6 +31,7 @@ public class GUI extends JFrame implements ActionListener {
         this.setSize(700, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        this.addWindowListener(this);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         this.add(mainPanel);
@@ -80,6 +83,10 @@ public class GUI extends JFrame implements ActionListener {
     // Remove user, close the socket and exit the system.
     @Override
     public void actionPerformed(ActionEvent e) {
+        disconnectAndExit();
+    }
+
+    private void disconnectAndExit() {
         user.setActive(false);
         try {
             networkSender.sendAdminDisconnectedMessage(user);
@@ -107,5 +114,40 @@ public class GUI extends JFrame implements ActionListener {
 
     public void setNetworkSender(NetworkSender networkSender) {
         this.networkSender = networkSender;
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        disconnectAndExit();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 }
