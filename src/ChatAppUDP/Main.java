@@ -18,9 +18,9 @@ public class Main {
                 NetworkSender networkSender = new NetworkSender(user);
                 gui.setNetworkSender(networkSender);
 
-                // Start the network receiver thread
                 NetworkReceiver networkReceiver = NetworkReceiver.getInstance(user);
                 networkReceiver.setGui(gui);
+                // Start the receiver thread to listen for incoming messages.
                 new Thread(networkReceiver).start();
 
                 // Send a multicast message, to notify other members.

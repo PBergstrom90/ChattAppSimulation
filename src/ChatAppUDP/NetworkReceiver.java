@@ -11,8 +11,8 @@ import java.net.NetworkInterface;
 public class NetworkReceiver extends Thread {
     private GUI gui;// Reference to the GUI
     private final User user;
-    private static NetworkReceiver instance;
     private final MulticastSocket socket;
+    private static NetworkReceiver instance;
     private final NetworkSender networkSender;
     private final byte[] buffer;
     public static boolean isRunning = true;
@@ -21,7 +21,7 @@ public class NetworkReceiver extends Thread {
         this.user = user;
         String ip = "234.235.236.237";
         int port = 8000;
-        socket = new MulticastSocket(port);
+        this.socket = new MulticastSocket(port);
         InetAddress iAdr = InetAddress.getByName(ip);
         InetSocketAddress group = new InetSocketAddress(iAdr, port);
         NetworkInterface netIf = NetworkInterface.getByName("wlan2");
@@ -31,6 +31,7 @@ public class NetworkReceiver extends Thread {
     }
 
     public static synchronized NetworkReceiver getInstance(User user) throws IOException {
+        // Singleton pattern, to ensure that only one instance of NetworkReceiver is created. As multiple receivers will cause issues.
         if (instance == null) {
             instance = new NetworkReceiver(user);
         }
@@ -46,7 +47,8 @@ public class NetworkReceiver extends Thread {
     }
 
     public void run() {
-        try{
+        try {
+            // Network receiver keeps running during the entire runtime, in order to process incoming messages.
             while (isRunning) {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
@@ -64,7 +66,10 @@ public class NetworkReceiver extends Thread {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());
         } finally {
-            socket.close();
+            // When the network receiver is done, close the socket.
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
         }
     }
 
