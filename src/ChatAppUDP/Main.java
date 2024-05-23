@@ -9,19 +9,25 @@ public class Main {
         // Ensure GUI creation and display runs on the Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
             String name = JOptionPane.showInputDialog(null, "Enter your name: ");
-            boolean active = true;
-            User user = new User(name, active);
+            User user = new User(name);
             GUI gui;
             try {
                 gui = new GUI(user);
                 gui.setVisible(true);
-                NetworkSender networkSender = new NetworkSender(user, gui);
-                networkSender.sendAdminConnectedMessage(user);
+
+                NetworkSender networkSender = new NetworkSender(user);
                 gui.setNetworkSender(networkSender);
+
+                // Start the network receiver thread
+                NetworkReceiver networkReceiver = NetworkReceiver.getInstance(user);
+                networkReceiver.setGui(gui);
+                new Thread(networkReceiver).start();
+
+                // Send a multicast message, to notify other members.
+                networkSender.sendAdminConnectedMessage(user);
             }
             catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());
-                e.printStackTrace();
             }
         });
     }

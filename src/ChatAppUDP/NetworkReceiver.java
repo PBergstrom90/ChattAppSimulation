@@ -10,31 +10,29 @@ import java.net.NetworkInterface;
 
 public class NetworkReceiver extends Thread {
     private GUI gui;// Reference to the GUI
-    private User user;
+    private final User user;
     private static NetworkReceiver instance;
     private final MulticastSocket socket;
-    private final InetAddress iAdr;
-    private final InetSocketAddress group;
-    private final NetworkInterface netIf;
-    private NetworkSender networkSender;
-    private byte[] buffer;
-    public boolean isRunning = true;
+    private final NetworkSender networkSender;
+    private final byte[] buffer;
+    public static boolean isRunning = true;
 
-    public NetworkReceiver() throws IOException {
+    public NetworkReceiver(User user) throws IOException {
+        this.user = user;
         String ip = "234.235.236.237";
         int port = 8000;
         socket = new MulticastSocket(port);
-        iAdr = InetAddress.getByName(ip);
-        group = new InetSocketAddress(iAdr, port);
-        netIf = NetworkInterface.getByName("wlan2");
+        InetAddress iAdr = InetAddress.getByName(ip);
+        InetSocketAddress group = new InetSocketAddress(iAdr, port);
+        NetworkInterface netIf = NetworkInterface.getByName("wlan2");
         socket.joinGroup(group, netIf);
-        networkSender = new NetworkSender(user, gui);
+        networkSender = new NetworkSender(user);
         buffer = new byte[1024];
     }
 
-    public static synchronized NetworkReceiver getInstance() throws IOException {
+    public static synchronized NetworkReceiver getInstance(User user) throws IOException {
         if (instance == null) {
-            instance = new NetworkReceiver();
+            instance = new NetworkReceiver(user);
         }
         return instance;
     }
@@ -43,8 +41,12 @@ public class NetworkReceiver extends Thread {
         this.gui = gui; // Set the reference to the GUI
     }
 
+    public static void setAppRunning(boolean running) {
+        isRunning = running;
+    }
+
     public void run() {
-        try {
+        try{
             while (isRunning) {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
@@ -61,7 +63,6 @@ public class NetworkReceiver extends Thread {
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             socket.close();
         }
@@ -70,7 +71,7 @@ public class NetworkReceiver extends Thread {
     private void processAdminMessage(String message) {
         String[] parts = message.split("::");
         if (parts.length < 3) {
-            return; // Invalid message format
+            return; // Invalid message format. Return.
         }
         String command = parts[1];
         String userName = parts[2];
@@ -91,16 +92,17 @@ public class NetworkReceiver extends Thread {
     }
 
     private void handleUserConnected(String userName) {
-        User newUser = new User(userName, true);
-        User.userList.add(newUser);
+        User newUser = new User(userName);
+        if(!User.userList.contains(newUser)) {
+            User.userList.add(newUser);
+            updateMembersArea();
+        }
         gui.updateChatArea("--- " + newUser.getName() + ": CONNECTED ---\n");
-        updateMembersArea();
         try {
             // Send a confirmation to other connected users, that the newly connected user has been added.
-            networkSender.sendAdminReceivedMessage(newUser);
+            networkSender.sendAdminReceivedMessage(user);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -121,19 +123,25 @@ public class NetworkReceiver extends Thread {
     }
 
     private void handleUserReceived(String userName) {
-        User user = new User(userName, true);
-        if (!User.userList.contains(user)) {
-                User.userList.add(user);
+        boolean userExists = false;
+        for (User user : User.userList) {
+            if (user.getName().equals(userName)) {
+                userExists = true;
+                break;
             }
-        System.out.println("Sent CALLOUT");
-        updateMembersArea();
+        }
+        if (!userExists) {
+            User newUser = new User(userName);
+            User.userList.add(newUser);
+            updateMembersArea();
+        }
     }
 
     private void updateMembersArea() {
         StringBuilder members = new StringBuilder();
         for (User user : User.userList) {
             members.append(user.getName()).append("\n");
+            gui.updateMembersArea(members.toString());
         }
-        gui.updateMembersArea(members.toString());
     }
 }

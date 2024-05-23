@@ -1,20 +1,19 @@
 package ChatAppUDP;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.*;
 
-public class NetworkSender extends Thread {
+public class NetworkSender {
 
-    private final String multicastAddress = "234.235.236.237";
     private final int port = 8000;
     private final InetAddress group;
     private final MulticastSocket socket;
-    private User user; // Reference to the user
-    private GUI gui;
+    private final User user; // Reference to the user
 
-    public NetworkSender(User user, GUI gui) throws IOException {
+    public NetworkSender(User user) throws IOException {
         this.user = user;
-        this.gui = gui;
+        String multicastAddress = "234.235.236.237";
         this.group = InetAddress.getByName(multicastAddress);
         this.socket = new MulticastSocket(port);
     }
@@ -28,7 +27,7 @@ public class NetworkSender extends Thread {
                     socket.send(packet);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error sending message: " + e.getMessage());
             }
         }).start();
     }
@@ -49,14 +48,7 @@ public class NetworkSender extends Thread {
     }
 
     public void sendAdminReceivedMessage(User user) throws IOException {
-        StringBuilder members = new StringBuilder();
-        for (User u : User.userList) {
-            members.append(u.getName()).append(",");
-        }
-        if (!members.isEmpty()) {
-            members.setLength(members.length() - 1); // Remove last comma
-        }
-        String fullMessage = "ADMIN::RECEIVED::" + user.getName() + "::" + members + "\n";
+        String fullMessage = "ADMIN::RECEIVED::" + user.getName();
         sendMessage(fullMessage);
     }
 }

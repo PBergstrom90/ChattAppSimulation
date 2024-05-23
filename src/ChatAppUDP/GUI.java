@@ -18,8 +18,6 @@ public class GUI extends JFrame implements ActionListener {
     public GUI(User user) throws IOException {
         this.user = user;
         createGUI();
-        NetworkReceiver.getInstance().setGui(this); // Set reference to GUI
-        new Thread(NetworkReceiver.getInstance()).start(); // Start the network receiver in a new thread
     }
 
     public void createGUI() {
@@ -28,7 +26,7 @@ public class GUI extends JFrame implements ActionListener {
         messageField.setEditable(true);
 
         this.setTitle("Chat " + user.getName());
-        this.setSize(700, 550);
+        this.setSize(700, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
@@ -79,6 +77,7 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // Action for when the disconnect button is pressed.
+    // Remove user, close the socket and exit the system.
     @Override
     public void actionPerformed(ActionEvent e) {
         user.setActive(false);
@@ -87,8 +86,8 @@ public class GUI extends JFrame implements ActionListener {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-
         User.userList.remove(user);
+        NetworkReceiver.setAppRunning(false);
         JOptionPane.showMessageDialog(null, user.getName() + " disconnected.");
         System.exit(0);
     }
@@ -99,10 +98,10 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     // Method to update members area
-    public void updateMembersArea(String members) {
+    public void updateMembersArea(String member) {
         SwingUtilities.invokeLater(() -> {
             chatMemberArea.setText("");
-            chatMemberArea.append(members);
+            chatMemberArea.append(member);
         });
     }
 
