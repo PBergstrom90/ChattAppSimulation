@@ -19,14 +19,15 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             isRunning = true;
-            gui.appendStatus("SERVER STARTED: on port " + port);
+            gui.appendStatus("SERVER STARTED ON PORT: " + serverSocket.getLocalPort());
 
             while (isRunning) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    ServerListener clientHandler = new ServerListener(clientSocket, this);
+                    ServerListener clientHandler = new ServerListener(clientSocket, this, gui);
                     clientHandlers.add(clientHandler);
                     new Thread(clientHandler).start();
+                    gui.appendStatus("Client Handler started");
                 } catch (IOException e) {
                     if (isRunning) {
                         gui.appendStatus("ERROR accepting connection: " + e.getMessage());

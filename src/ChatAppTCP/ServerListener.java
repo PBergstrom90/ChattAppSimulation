@@ -6,13 +6,15 @@ import java.net.*;
 public class ServerListener implements Runnable {
     private final Socket socket;
     private final Server server;
+    private final ServerGUI gui;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private User user;
 
-    public ServerListener(Socket socket, Server server) {
+    public ServerListener(Socket socket, Server server, ServerGUI gui) {
         this.socket = socket;
         this.server = server;
+        this.gui = gui;
     }
 
     @Override
@@ -20,7 +22,7 @@ public class ServerListener implements Runnable {
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-
+            gui.appendStatus("SERVER LISTENING ADDRESS: " + socket.getInetAddress() + " PORT: " + socket.getPort());
             // Read the User object sent by the client
             user = (User) in.readObject();
             User.userList.add(user);

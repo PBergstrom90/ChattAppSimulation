@@ -20,13 +20,6 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
         createServerGUI();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ServerGUI serverGUI = new ServerGUI();
-            serverGUI.setVisible(true);
-        });
-    }
-
     private void createServerGUI() {
         this.setTitle("Server Control Panel");
         this.setSize(400, 300);
@@ -84,6 +77,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
 
     @Override
     public void windowClosing(WindowEvent e) {
+        JOptionPane.showMessageDialog(null, "Server closing");
         server.stop();
         System.exit(0);
     }

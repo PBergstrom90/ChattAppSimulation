@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Main {
+public class ClientMain {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             String name = JOptionPane.showInputDialog(null, "Enter your name: ");
