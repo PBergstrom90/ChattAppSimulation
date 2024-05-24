@@ -86,6 +86,7 @@ public class GUI extends JFrame implements ActionListener, WindowListener {
         disconnectAndExit();
     }
 
+    // Exit procedure.
     private void disconnectAndExit() {
         user.setActive(false);
         try {
@@ -112,6 +113,8 @@ public class GUI extends JFrame implements ActionListener, WindowListener {
         });
     }
 
+    // This method allows the GUI to send messages over the network.
+    // It is called from the Main class after initializing the NetworkSender.
     public void setNetworkSender(NetworkSender networkSender) {
         this.networkSender = networkSender;
     }
