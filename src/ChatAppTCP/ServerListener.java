@@ -24,11 +24,12 @@ public class ServerListener implements Runnable {
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
-            gui.appendStatus("SERVER LISTENING ADDRESS: " + socket.getInetAddress() + " PORT: " + socket.getPort());
+            gui.appendStatus("SERVER LISTENING ADDRESS: " + socket.getInetAddress() + "\n");
+
             // Read the User object sent by the client
             user = (User) in.readObject();
             User.userList.add(user);
-            server.broadcastMessage("ADMIN::CONNECTED::" + user.getName());
+            server.broadcastMessage("ADMIN::CONNECTED::" + user.getName() + "\n");
 
             Object received;
             while ((received = in.readObject()) != null) {

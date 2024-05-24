@@ -19,7 +19,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             isRunning = true;
-            gui.appendStatus("SERVER STARTED ON PORT: " + serverSocket.getLocalPort());
+            gui.appendStatus("SERVER STARTED ON PORT: " + serverSocket.getLocalPort() + "\n");
 
             while (isRunning) {
                 try {
@@ -27,15 +27,15 @@ public class Server {
                     ServerListener clientHandler = new ServerListener(clientSocket, this, gui);
                     clientHandlers.add(clientHandler);
                     new Thread(clientHandler).start();
-                    gui.appendStatus("Client Handler started");
+                    gui.appendStatus("Client Handler started \n");
                 } catch (IOException e) {
                     if (isRunning) {
-                        gui.appendStatus("ERROR accepting connection: " + e.getMessage());
+                        gui.appendStatus("ERROR accepting connection: " + e.getMessage() + "\n");
                     }
                 }
             }
         } catch (IOException e) {
-            gui.appendStatus("SERVER ERROR: " + e.getMessage());
+            gui.appendStatus("SERVER ERROR: " + e.getMessage() + "\n");
         }
     }
 
@@ -48,7 +48,7 @@ public class Server {
 
     public synchronized void removeClient(ServerListener clientHandler) {
         clientHandlers.remove(clientHandler);
-        gui.appendStatus("CLIENT DISCONNECTED: " + clientHandler.getUserName());
+        broadcastMessage("ADMIN::DISCONNECTED::" + clientHandler.getUserName() + "\n");
     }
 
     public void stop() {
@@ -62,9 +62,9 @@ public class Server {
             }
             clientHandlers.clear();
         } catch (IOException e) {
-            gui.appendStatus("ERROR stopping server: " + e.getMessage());
+            gui.appendStatus("ERROR stopping server: " + e.getMessage() + "\n");
         }
-        gui.appendStatus("SERVER STOPPED.");
+        gui.appendStatus("SERVER STOPPED.\n");
     }
 }
 

@@ -55,14 +55,15 @@ public class ClientGUI extends JFrame implements ActionListener, WindowListener 
         gbc.weighty = 1.0;
         gbc.gridx = 1;
         gbc.gridy = 0;
-        JPanel memberAreaContainer = new JPanel(new BorderLayout());
+        JPanel memberAreaPanel = new JPanel(new BorderLayout());
         JLabel membersLabel = new JLabel("MEMBERS ONLINE: ");
-        memberAreaContainer.add(membersLabel, BorderLayout.NORTH);
-        memberAreaContainer.add(new JScrollPane(chatMemberArea), BorderLayout.CENTER);
-        textPanel.add(memberAreaContainer, gbc);
+        memberAreaPanel.add(membersLabel, BorderLayout.NORTH);
+        memberAreaPanel.add(new JScrollPane(chatMemberArea), BorderLayout.CENTER);
+        textPanel.add(memberAreaPanel, gbc);
         chatPanel.add(textPanel, BorderLayout.CENTER);
 
         chatArea.setFont(new Font("Comic Sans", Font.PLAIN, 16));
+        chatMemberArea.setFont(new Font("Comic Sans", Font.PLAIN, 16));
         messageField.setFont(new Font("Comic Sans", Font.PLAIN, 16));
         messageField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 

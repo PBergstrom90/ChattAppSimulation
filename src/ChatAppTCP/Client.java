@@ -53,14 +53,14 @@ public class Client {
     private void processAdminMessage(String message) {
         String[] parts = message.split("::");
         if (parts.length == 3) {
-            String username = parts[1];
-            String status = parts[2];
+            String username = parts[2];
+            String status = parts[1];
             if (status.equals("CONNECTED")) {
-                gui.updateChatArea(username + " CONNECTED\n");
-                gui.updateMembersArea(username + "\n");
+                gui.updateChatArea("CONNECTED: " + username);
+                gui.updateMembersArea(username);
             } else if (status.equals("DISCONNECTED")) {
-                gui.updateChatArea(username + " DISCONNECTED\n");
-                gui.updateMembersArea(username + "\n");
+                gui.updateChatArea("DISCONNECTED: " + username);
+                gui.updateMembersArea(username);
             }
         }
     }

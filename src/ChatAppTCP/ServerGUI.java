@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.awt.Color.GREEN;
 import static java.awt.Color.RED;
@@ -22,7 +24,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
 
     private void createServerGUI() {
         this.setTitle("Server Control Panel");
-        this.setSize(400, 300);
+        this.setSize(400, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         startButton.addActionListener(this);
@@ -44,7 +46,10 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
     }
 
     public void appendStatus(String status) {
-        SwingUtilities.invokeLater(() -> statusArea.append(status));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String timestamp = LocalTime.now().format(formatter);
+        String formattedStatus = "[" + timestamp + "] - " + status;
+        SwingUtilities.invokeLater(() -> statusArea.append(formattedStatus));
     }
 
     @Override
