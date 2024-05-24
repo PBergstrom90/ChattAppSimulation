@@ -44,7 +44,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
     }
 
     public void appendStatus(String status) {
-        SwingUtilities.invokeLater(() -> statusArea.append(status + "\n"));
+        SwingUtilities.invokeLater(() -> statusArea.append(status));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
 
     @Override
     public void windowClosing(WindowEvent e) {
-        JOptionPane.showMessageDialog(null, "Server closing");
+        JOptionPane.showMessageDialog(null, "SERVER CLOSING");
         server.stop();
         System.exit(0);
     }

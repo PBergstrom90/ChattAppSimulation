@@ -90,6 +90,10 @@ public class ClientGUI extends JFrame implements ActionListener, WindowListener 
         SwingUtilities.invokeLater(() -> chatArea.append(message));
     }
 
+    public void updateMembersArea(String message) {
+        SwingUtilities.invokeLater(() -> chatMemberArea.append(message));
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }

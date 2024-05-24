@@ -48,7 +48,7 @@ public class Server {
 
     public synchronized void removeClient(ServerListener clientHandler) {
         clientHandlers.remove(clientHandler);
-        gui.appendStatus("Client disconnected: " + clientHandler.getUserName());
+        gui.appendStatus("CLIENT DISCONNECTED: " + clientHandler.getUserName());
     }
 
     public void stop() {

@@ -12,13 +12,11 @@ public class ClientMain {
             ClientGUI clientGUI;
             try {
                 clientGUI = new ClientGUI(user);
-                clientGUI.setVisible(true);
-
                 Socket socket = new Socket("localhost", 8000); // Connect to the server
                 Client client = new Client(socket, clientGUI, user);
                 clientGUI.setClient(client);
                 client.start();
-
+                clientGUI.setVisible(true);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());
             }
