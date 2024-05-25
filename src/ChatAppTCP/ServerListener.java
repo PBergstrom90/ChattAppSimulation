@@ -33,9 +33,14 @@ public class ServerListener implements Runnable {
 
             Object received;
             while ((received = in.readObject()) != null) {
-                if (received instanceof String) {
-                    String message = (String) received;
-                    server.broadcastMessage(user.getName() + ": " + message + "\n");
+                if (received instanceof String message) {
+                    if (message.equals("PING")) {
+                        for (User u : User.userList) {
+                            sendMessage("ADMIN::ALIVE::" + u.getName() + "\n");
+                        }
+                    } else {
+                        server.broadcastMessage(user.getName() + ": " + message + "\n");
+                    }
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -68,6 +73,7 @@ public class ServerListener implements Runnable {
                 user.setActive(false);
                 User.userList.remove(user);
             }
+            gui.appendStatus("Client Handler closed \n");
         } catch (IOException e) {
             e.printStackTrace();
         }

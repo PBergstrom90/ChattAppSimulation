@@ -5,7 +5,6 @@ import java.net.*;
 import java.util.*;
 
 public class Server {
-    private final int port = 8000;
     private final Set<ServerListener> clientHandlers = new HashSet<>();
     private final ServerGUI gui;
     private ServerSocket serverSocket;
@@ -17,6 +16,7 @@ public class Server {
 
     public void start() {
         try {
+            int port = 8000;
             serverSocket = new ServerSocket(port);
             isRunning = true;
             gui.appendStatus("SERVER STARTED ON PORT: " + serverSocket.getLocalPort() + "\n");

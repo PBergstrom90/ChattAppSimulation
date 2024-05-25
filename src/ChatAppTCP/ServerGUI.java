@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,6 +20,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
     private final JTextArea statusArea = new JTextArea();
     private final JButton startButton = new JButton("Start Server");
     private final JButton stopButton = new JButton("Stop Server");
+    private final JButton printButton = new JButton("Print to File");
     private Server server;
 
     public ServerGUI() {
@@ -29,6 +34,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
         this.setLocationRelativeTo(null);
         startButton.addActionListener(this);
         stopButton.addActionListener(this);
+        printButton.addActionListener(this);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         this.add(mainPanel);
@@ -38,6 +44,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
+        buttonPanel.add(printButton);
 
         mainPanel.add(buttonPanel, BorderLayout.NORTH);
 
@@ -50,6 +57,22 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
         String timestamp = LocalTime.now().format(formatter);
         String formattedStatus = "[" + timestamp + "] - " + status;
         SwingUtilities.invokeLater(() -> statusArea.append(formattedStatus));
+    }
+
+    // Method to handle file writing
+    private void writeStatusToFile() {
+        LocalDate currentDate = LocalDate.now();
+        String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String filename = "server_status_" + formattedDate + ".txt";
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename, true))) {
+            writer.println("Date: " + currentDate); // Add the date to the file
+            writer.println(statusArea.getText());
+            writer.println("---------------------");
+            writer.println();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -71,6 +94,14 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
                 startButton.setBackground(null);
                 stopButton.setEnabled(false);
                 stopButton.setBackground(RED);
+            }
+        }
+        if (e.getSource() == printButton) { // Handle the print button action
+            try {
+                writeStatusToFile();
+                JOptionPane.showMessageDialog(null, "File saved successfully");
+            } catch (Exception err) {
+                JOptionPane.showMessageDialog(null, "File Error " + err.getMessage());
             }
         }
     }
