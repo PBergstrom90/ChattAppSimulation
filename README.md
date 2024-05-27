@@ -73,6 +73,6 @@ The UDP-based chat application provides a faster messaging service, but without 
 ## Notes
 
 - Ensure the server is running before starting the clients.
-- The applications are configured to connect to `localhost` on port `8000`. Modify the source code if a different address or port is required.
+- The TCP application is configured to connect to `localhost` on port `8000`. Modify the source code if a different address or port is required. The UDP application is using multicast for external communication.
 - Both TCP and UDP applications use the same `User.java` class for representing users.
 
