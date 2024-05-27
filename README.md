@@ -26,19 +26,19 @@ This repository contains two chat applications: `ChatAppTCP` and `ChatAppUDP`. B
 
 The TCP-based chat application provides a reliable messaging service, ensuring messages are delivered in the correct order and without loss.
 
+#### Server
+
+1. First, run `ServerMain.java`.
+2. Start the server using the "Start Server" button in the GUI.
+3. Monitor connected users and server status.
+4. Optionally, stop the server using the "Stop Server" button.
+
 #### Client
 
 1. Run `ClientMain.java`.
 2. Enter your username in the prompted dialog.
 3. The client connects to the server at `localhost` on port `8000`.
 4. Use the GUI to send messages and see the list of connected users.
-
-#### Server
-
-1. Run `ServerMain.java`.
-2. Start the server using the "Start Server" button in the GUI.
-3. Monitor connected users and server status.
-4. Optionally, stop the server using the "Stop Server" button.
 
 #### Directory Structure
 
