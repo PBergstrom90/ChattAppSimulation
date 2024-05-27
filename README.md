@@ -59,7 +59,7 @@ The UDP-based chat application provides a faster messaging service, but without 
 
 1. Run `Main.java` file to start up the client.
 2. Enter your username in the prompted dialog.
-3. The client connects to the server at `localhost` on port `8000`.
+3. The client connects to the server using multicast address `234.235.236.237` on port 8000.
 4. Use the GUI to send messages and see the list of connected users.
 
 #### Directory Structure
