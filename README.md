@@ -13,7 +13,7 @@ This repository contains two chat applications: `ChatAppTCP` and `ChatAppUDP`. B
 - Real-time messaging.
 - Display of connected users.
 - User-friendly GUI.
-- Server-side logging and control panel.
+- Server-side logging and control panel for the TCP application.
 
 ## Requirements
 
