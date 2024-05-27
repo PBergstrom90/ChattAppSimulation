@@ -3,6 +3,7 @@ package ChatAppTCP;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientMain {
     public static void main(String[] args) {
@@ -17,7 +18,11 @@ public class ClientMain {
                 clientGUI.setClient(client);
                 client.start();
                 clientGUI.setVisible(true);
-            } catch (IOException e) {
+            } catch(SocketException e) {
+                System.out.println("Socket closed for user: " + user.getName() + "\n");
+                e.printStackTrace();
+            }
+            catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());
             }
         });

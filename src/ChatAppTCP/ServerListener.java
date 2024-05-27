@@ -28,22 +28,32 @@ public class ServerListener implements Runnable {
 
             // Read the User object sent by the client
             user = (User) in.readObject();
-            User.userList.add(user);
+            synchronized (User.userList) {
+                User.userList.add(user);
+            }
             server.broadcastMessage("ADMIN::CONNECTED::" + user.getName() + "\n");
 
             Object received;
             while ((received = in.readObject()) != null) {
                 if (received instanceof String message) {
                     if (message.equals("PING")) {
-                        for (User u : User.userList) {
-                            sendMessage("ADMIN::ALIVE::" + u.getName() + "\n");
+                        synchronized (User.userList) {
+                            for (User u : User.userList) {
+                                sendMessage("ADMIN::ALIVE::" + u.getName() + "\n");
+                            }
                         }
                     } else {
                         server.broadcastMessage(user.getName() + ": " + message + "\n");
                     }
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (EOFException e) {
+            gui.appendStatus("Client has disconnected: " + user.getName() + "\n");
+        }
+        catch (SocketException e) {
+            gui.appendStatus("Socket closed for Client: " + user.getName() + "\n");
+        }
+        catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             close();
@@ -73,7 +83,11 @@ public class ServerListener implements Runnable {
                 user.setActive(false);
                 User.userList.remove(user);
             }
-            gui.appendStatus("Client Handler closed \n");
+            if(!(user == null)) {
+                gui.appendStatus("Client Handler closed for user: " + user.getName() + "\n");
+            } else {
+                gui.appendStatus("Client Handler closed\n");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -10,7 +10,7 @@ public class User implements Serializable {
     private final String name;
     private boolean active;
     // Use synchronized list to ensure thread safety, when multiple instances access the userList.
-    public static List<User> userList = Collections.synchronizedList(new ArrayList<>());
+    public static final List<User> userList = Collections.synchronizedList(new ArrayList<>());
 
     public User(String name) {
         this.name = name;

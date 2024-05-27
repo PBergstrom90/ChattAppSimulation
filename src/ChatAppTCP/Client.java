@@ -40,7 +40,10 @@ public class Client {
                         processMessage((String) received);
                     }
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (SocketException e) {
+                gui.updateChatArea("SOCKET CLOSED for user: " + user.getName());
+            }
+            catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
                 close();
