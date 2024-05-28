@@ -1,5 +1,6 @@
 package ChatAppTCP;
 
+import javax.swing.*;
 import java.io.*;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,9 +37,11 @@ public class ServerListener implements Runnable {
             Object received;
             while ((received = in.readObject()) != null) {
                 if (received instanceof String message) {
+                    // Process the "Ping" message sent by newly connected users, to update the user list.
                     if (message.equals("PING")) {
                         synchronized (User.userList) {
                             for (User u : User.userList) {
+                                // Connected users send a reply, to confirm that they are online.
                                 sendMessage("ADMIN::ALIVE::" + u.getName() + "\n");
                             }
                         }
@@ -54,7 +57,7 @@ public class ServerListener implements Runnable {
             gui.appendStatus("Socket closed for Client: " + user.getName() + "\n");
         }
         catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            gui.appendStatus("IO Error for user: " + user.getName() + "\n");
         } finally {
             close();
             server.removeClient(this);
@@ -66,7 +69,7 @@ public class ServerListener implements Runnable {
             out.writeObject(message);
             out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            gui.appendStatus("Error sending message: " + message + "\n");
         }
     }
 
@@ -89,7 +92,7 @@ public class ServerListener implements Runnable {
                 gui.appendStatus("Client Handler closed\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

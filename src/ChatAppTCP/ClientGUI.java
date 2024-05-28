@@ -62,9 +62,9 @@ public class ClientGUI extends JFrame implements ActionListener, WindowListener 
         textPanel.add(memberAreaPanel, gbc);
         chatPanel.add(textPanel, BorderLayout.CENTER);
 
-        chatArea.setFont(new Font("Comic Sans", Font.PLAIN, 16));
-        chatMemberArea.setFont(new Font("Comic Sans", Font.PLAIN, 16));
-        messageField.setFont(new Font("Comic Sans", Font.PLAIN, 16));
+        chatArea.setFont(new Font("Dialog", Font.PLAIN, 16));
+        chatMemberArea.setFont(new Font("Dialog", Font.PLAIN, 16));
+        messageField.setFont(new Font("Dialog", Font.PLAIN, 16));
         messageField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         messageField.addActionListener(e -> {

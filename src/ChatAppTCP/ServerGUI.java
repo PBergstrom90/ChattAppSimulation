@@ -71,7 +71,7 @@ public class ServerGUI extends JFrame implements WindowListener, ActionListener 
             writer.println("---------------------");
             writer.println();
         } catch (IOException e) {
-            e.printStackTrace();
+            appendStatus("ERROR: writing status to file");
         }
     }
 

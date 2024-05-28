@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
+// Start the ServerMain instance first, before ClientMain.
 public class ClientMain {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -20,7 +21,6 @@ public class ClientMain {
                 clientGUI.setVisible(true);
             } catch(SocketException e) {
                 System.out.println("Socket closed for user: " + user.getName() + "\n");
-                e.printStackTrace();
             }
             catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage());

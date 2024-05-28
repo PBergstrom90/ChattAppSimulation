@@ -44,7 +44,7 @@ public class Client {
                 gui.updateChatArea("SOCKET CLOSED for user: " + user.getName());
             }
             catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "ERROR: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             } finally {
                 close();
             }
@@ -56,7 +56,8 @@ public class Client {
         if (message.startsWith("ADMIN::")) {
             processAdminMessage(message);
         } else {
-            gui.updateChatArea(message); // Update GUI with received message
+            // If the message is a regular message, update the chatGUI.
+            gui.updateChatArea(message);
         }
     }
 
@@ -103,7 +104,7 @@ public class Client {
             out.writeObject(message);
             out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ERROR sending message: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -113,7 +114,7 @@ public class Client {
                 socket.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ERROR closing the socket: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
